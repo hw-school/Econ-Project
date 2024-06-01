@@ -23,7 +23,7 @@ for k in K:
     inertia.append(kmeans.inertia_)
 
 plt.figure(figsize=(10, 6))
-plt.plot(K, inertia, markersize=8)
+plt.plot(K, inertia, "bo-", markersize=8)
 plt.xlabel('Number of clusters (k)')
 plt.ylabel('Inertia')
 plt.title('Elbow Method For Optimal k')
@@ -31,7 +31,7 @@ plt.savefig('./figures/elbow.jpg')
 plt.close()
 
 
-optimal_k = 4
+optimal_k = 3
 
 #kmeans
 kmeans = KMeans(n_clusters=optimal_k, random_state=42)
