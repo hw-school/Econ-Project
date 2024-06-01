@@ -31,7 +31,7 @@ plt.savefig('./figures/elbow.jpg')
 plt.close()
 
 
-optimal_k = 3
+optimal_k = 4
 
 #kmeans
 kmeans = KMeans(n_clusters=optimal_k, random_state=42)
