@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 folder_path = 'raw'
 
-min_year = 1985
+min_year = 1987
 data_dict = {year: [] for year in range(min_year, 2024)}
 
 def extract_year(date_str):
