@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 folder_path = 'raw'
 
-min_year = 1987
+min_year = 1984
 data_dict = {year: [] for year in range(min_year, 2024)}
 
 def extract_year(date_str):
@@ -42,6 +42,6 @@ results_df.to_csv('values.csv', index = True)
 # Display the results
 #print(results_df)
 
-not_used = ['New Housing Units', 'GDP Deflator', 'Gini Coefficient', 'Industrial Production Index']
+not_used = ['New Housing Units', 'GDP Deflator', 'Gini Coefficient', 'Industrial Production Index', 'Labor Participation Rate']
 results_df.drop(not_used, axis = 1, inplace = True)
 results_df.to_csv('filtered.csv', index = True)
