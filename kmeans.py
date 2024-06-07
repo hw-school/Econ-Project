@@ -28,7 +28,7 @@ plt.plot(K, inertia, "bo-", markersize=8)
 plt.xlabel('Number of clusters (k)')
 plt.ylabel('Inertia')
 plt.title('Elbow Method For Optimal k')
-plt.savefig('./figures/elbow.jpg')
+plt.savefig('./figures/elbow.jpg', bbox_inches="tight")
 plt.close()
 
 
@@ -58,5 +58,5 @@ plt.title('PCA Clusters')
 for i in range(pca_df.shape[0]):
     plt.annotate(pca_df['Year'].iloc[i], (pca_df['PC1'].iloc[i], pca_df['PC2'].iloc[i]), 
                  fontsize=6)
-plt.savefig('./figures/clusters_annotated.jpg')
+plt.savefig('./figures/clusters_annotated.jpg', bbox_inches="tight")
 plt.close() 

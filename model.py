@@ -1,51 +1,47 @@
 import pandas as pd
-import numpy as np 
+import numpy as np
+from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-years = [2012, 2015, 2016, 2017, 2018,2019,2020,2021,2022,2023]
+df_total = pd.read_csv('filtered.csv', index_col=0)
+df = df_total.loc[[2014,2015,2016,2017,2018,2019,2021,2022,2023]]
+# Standardize the data
+standardized_data = (df - df.mean()) / df.std()
 
-df = pd.read_csv('filtered.csv', index_col = 0)
-columns = df.columns
-happiness_df = pd.read_csv('Happiness Index.csv', index_col = 0)
+# Apply PCA
+pca = PCA()
+pca.fit(standardized_data)
 
-from sklearn import linear_model
-clf = linear_model.LinearRegression()
-
-X = []
-y = []
-for year in years:
-    X.append(df.loc[year, :].values.tolist())
-    happiness = happiness_df.loc[year, :].values.tolist()[0]
-    happiness = (7 - happiness) * 100
-    y.append(happiness)
-
-clf = linear_model.LinearRegression()
-clf.fit(X,y)
+explained_variance = np.cumsum(pca.explained_variance_ratio_)
+num_components = np.argmax(explained_variance >= 0.95) + 1
 
 
-from sklearn.metrics import mean_squared_error, r2_score
-predictions = clf.predict(X)
-mse = mean_squared_error(y, predictions)
-r2 = r2_score(y, predictions)
-print(df.columns.tolist())
-print("Coefficients:", clf.coef_)
-print("Intercept:", clf.intercept_)
-print("Mean Squared Error:", mse)
-print("R² Score:", r2)
-print("Predictions:", predictions)
+pca = PCA(n_components=num_components)
+principal_components = pca.fit_transform(standardized_data)
+composite_index = principal_components.sum(axis=1)
 
-df_2024 = pd.read_csv('2024.csv', index_col=0)
-data = df_2024.loc[2024].values
-prediction = clf.predict([data])[0]
-predicted_index = 7-prediction/100
-print(predicted_index)
 
-happiness_indices = happiness_df.loc[years].values
-plt.plot(years, happiness_indices, marker = 'o', label = 'Actual Happiness Index')
-plt.plot(2024, predicted_index, 'ro', label = 'Predicted Index in 2024')
+components = pca.components_
+
+weights = np.sum(components, axis=0)
+
+weights /= np.sum(np.abs(weights))
+
+feature_weights = pd.Series(weights, index=df.columns)
+print("Feature Weights:")
+print(feature_weights)
+feature_weights.to_csv('weights.csv')
+
+
+df['Composite Index'] = composite_index
+df_2020 = df_total.loc[2020]
+df_2020 = (df_2020 - df_2020.mean()) / df_2020.std()
+
+
+plt.figure(figsize=(12, 6))
+plt.plot(df.index, df['Composite Index'], "bo-", label='Composite Index')
+plt.title('Economic Composite Index')
+plt.xlabel('Time')
+plt.ylabel('Composite Index')
 plt.legend()
-plt.savefig('figures/happiness index.jpg')
-plt.close()
-
-
-
+plt.savefig('figures/model.jpg')
